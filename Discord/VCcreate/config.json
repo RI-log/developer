@@ -1,0 +1,20 @@
+{
+  "token": "TOKEN_ID",
+
+  "lobbies": {
+    "2person": {
+      "channel_id": "channel_id",
+      "category_id": "category_id",
+      "max_members": 2
+    },
+    "unlimited": {
+      "channel_id": "channel_id",
+      "category_id": "category_id",
+      "max_members": 0
+    }
+  },
+
+  "accessible_roles": [
+    "1434345149311225926"
+  ]
+}
