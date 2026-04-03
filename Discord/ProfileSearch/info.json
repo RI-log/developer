@@ -1,0 +1,6 @@
+{
+  "token": "BOTトークンを取得",
+  "female_channel_id": 女性プロフィールチャンネルID,
+  "male_channel_id": 男性プロフィールチャンネルID,
+  "couple_channel_id": カップルプロフィールチャンネルID
+}
