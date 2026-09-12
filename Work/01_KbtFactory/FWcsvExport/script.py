@@ -140,10 +140,14 @@ if USE_IP_FILTER:
         )
 
     if USE_SRCIP_FILTER and SRC_IP in ("", "x.x.x.x"):
-        raise ValueError("SRC_IP を入力してください。")
+        raise ValueError(
+            "SRC_IP を入力してください。"
+        )
 
     if USE_DSTIP_FILTER and DST_IP in ("", "x.x.x.x"):
-        raise ValueError("DST_IP を入力してください。")
+        raise ValueError(
+            "DST_IP を入力してください。"
+        )
 
 # ディレクトリが存在しない場合は作成
 os.makedirs(save_dir, exist_ok=True)
@@ -153,7 +157,9 @@ if GET_SINGLE_POLICY and not GET_POLICY_RANGE:
 elif GET_POLICY_RANGE and not GET_SINGLE_POLICY:
     policy_ids = range(RANGE_START_POLICY_ID, RANGE_END_POLICY_ID + 1)
 else:
-    raise ValueError("GET_SINGLE_POLICY と GET_POLICY_RANGE は、どちらか一方だけ True にしてください。")
+    raise ValueError(
+        "GET_SINGLE_POLICY と GET_POLICY_RANGE は、どちらか一方だけ True にしてください。"
+    )
 
 for policy_id in policy_ids:
     url = f"https://{FGT_IP}/api/v2/log/{LOG_DEVICE}/traffic/forward"
