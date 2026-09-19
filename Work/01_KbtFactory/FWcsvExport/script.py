@@ -17,23 +17,23 @@ API_TOKEN = "none"
 # FortiGateログ保存先
 # 検証機: memory
 # 本番機: disk
-LOG_DEVICE = "disk"
+LOG_DEVICE = "none"
 
 # 保存先ディレクトリ指定
 save_dir = r"none"
 
-# 取得するログ件数 (MAX:1000)
-LOG_ROWS = 1000
+# 取得するログ件数 (MAX:5000)
+LOG_ROWS = 5000
 
 # 最大検索範囲 (分)
-MAX_SEARCH_MINUTES = 30
+MAX_SEARCH_MINUTES = 60
 
 # 日時フィルタ
 USE_DATETIME_FILTER = True  # True or False
 
 # 取得対象日時 "yyyy-mm-dd hh:mm"
-START_DATETIME = "2026-09-09 10:30"
-END_DATETIME = "2026-09-09 10:59"
+START_DATETIME = "yyyy-mm-dd hh:mm"
+END_DATETIME = "yyyy-mm-dd hh:mm"
 
 # IPアドレスフィルタ
 USE_IP_FILTER = False  # True or False
@@ -46,15 +46,15 @@ SRC_IP = "x.x.x.x"
 USE_DSTIP_FILTER = False  # True or False
 DST_IP = "x.x.x.x"
 
-# 取得対象ポリシーIDの指定
+# 取得対象ポリシーID指定
 # ポリシーログ取得(個別)
 GET_SINGLE_POLICY = True  # True or False
-SINGLE_POLICY_ID = 201
+SINGLE_POLICY_ID = None
 
 # ポリシーログ取得(範囲)
 GET_POLICY_RANGE = False  # True or False
-RANGE_START_POLICY_ID = 9000
-RANGE_END_POLICY_ID = 9064
+RANGE_START_POLICY_ID = None
+RANGE_END_POLICY_ID = None
 
 # CSV出力項目
 required_fields = [
@@ -81,12 +81,12 @@ timestamp_str = end_time.strftime("%Y%m%d%H%M%S")
 
 # 再確認設定
 RETRY_INTERVAL = 5
-MAX_RETRY_COUNT = 6
+MAX_RETRY_COUNT = 12
 
-# 取得件数の上限確認
-if LOG_ROWS < 1 or LOG_ROWS > 1000:
+# 取得件数上限
+if LOG_ROWS < 1 or LOG_ROWS > 5000:
     raise ValueError(
-        "LOG_ROWS は1以上1000以下で指定してください。"
+        "LOG_ROWS は1以上5000以下で指定してください。"
     )
 
 # 日時フィルタ
@@ -115,10 +115,10 @@ if USE_DATETIME_FILTER:
             "START_DATETIME は END_DATETIME 以前の日時を指定してください。"
         )
 
-    # END_DATETIMEで指定した1分間を含める
+    # END_DATETIME+1分間
     end_datetime = end_datetime + datetime.timedelta(minutes=1)
 
-    # 最大検索範囲の確認
+    # 最大検索範囲
     search_minutes = (
         end_datetime - start_datetime
     ).total_seconds() / 60
@@ -149,9 +149,10 @@ if USE_IP_FILTER:
             "DST_IP を入力してください。"
         )
 
-# ディレクトリが存在しない場合は作成
+# ディレクトリ作成
 os.makedirs(save_dir, exist_ok=True)
 
+# ポリシーID取得
 if GET_SINGLE_POLICY and not GET_POLICY_RANGE:
     policy_ids = [SINGLE_POLICY_ID]
 elif GET_POLICY_RANGE and not GET_SINGLE_POLICY:
@@ -161,6 +162,7 @@ else:
         "GET_SINGLE_POLICY と GET_POLICY_RANGE は、どちらか一方だけ True にしてください。"
     )
 
+# ログ取得処理
 for policy_id in policy_ids:
     url = f"https://{FGT_IP}/api/v2/log/{LOG_DEVICE}/traffic/forward"
 
@@ -191,7 +193,7 @@ for policy_id in policy_ids:
     if response.status_code == 200:
         data = response.json()
 
-        # 検索が完了していない場合は同じsession_idで再確認
+        # 再確認
         retry_count = 0
 
         while not data.get("ready", False) and retry_count < MAX_RETRY_COUNT:
@@ -226,8 +228,12 @@ for policy_id in policy_ids:
             data = response.json()
 
         if response.status_code != 200:
-            print(f"Error for policy {policy_id}: {response.status_code}")
-            print(response.text)
+            print(
+                f"Error for policy {policy_id}: {response.status_code}"
+            )
+            print(
+                response.text
+            )
             continue
 
         logs = data.get("results", [])
@@ -238,7 +244,7 @@ for policy_id in policy_ids:
             f"取得件数={len(logs)}"
         )
 
-        # 最大30秒待っても検索が完了しなかった場合
+        # エラー処理
         if not data.get("ready", False):
             print(
                 f"ポリシーID {policy_id} のログ検索は"
@@ -260,10 +266,18 @@ for policy_id in policy_ids:
                     filtered_entry = {key: entry.get(key, "") for key in required_fields}
                     writer.writerow(filtered_entry)
 
-            print(f"ポリシーID {policy_id} のログを {filename} に保存しました。")
+            print(
+                f"ポリシーID {policy_id} のログを {filename} に保存しました。"
+            )
         else:
-            print(f"ポリシーID {policy_id} のログはありませんでした。")
+            print(
+                f"ポリシーID {policy_id} のログはありませんでした。"
+            )
 
     else:
-        print(f"Error for policy {policy_id}: {response.status_code}")
-        print(response.text)
+        print(
+            f"Error for policy {policy_id}: {response.status_code}"
+        )
+        print(
+            response.text
+        )
