@@ -20,7 +20,7 @@ API_TOKEN = "none"
 LOG_DEVICE = "none"
 
 # 保存先ディレクトリ指定
-save_dir = r"none"
+SAVE_DIR = r"none"
 
 # 取得するログ件数 (MAX:5000)
 LOG_ROWS = 5000
@@ -29,7 +29,7 @@ LOG_ROWS = 5000
 MAX_SEARCH_MINUTES = 60
 
 # 日時フィルタ
-USE_DATETIME_FILTER = True  # True or False
+USE_DATETIME_FILTER = False  # True or False
 
 # 取得対象日時 "yyyy-mm-dd hh:mm"
 START_DATETIME = "yyyy-mm-dd hh:mm"
@@ -57,7 +57,7 @@ RANGE_START_POLICY_ID = None
 RANGE_END_POLICY_ID = None
 
 # CSV出力項目
-required_fields = [
+REQUIRED_FIELDS = [
     "date",            # 日付
     "time",            # 時刻
     "srcip",           # 送信元
@@ -65,7 +65,10 @@ required_fields = [
     "policyid",        # ポリシーID
     "service",         # サービス
     "action",          # アクション
-    "proto",           # プロトコル
+    "sentbyte",        # 送信バイト
+    "rcvdbyte",        # 受信バイト
+    "sentpkt",         # 送信パケット
+    "rcvdpkt",         # 受信パケット
     "dstport",         # 宛先ポート
     "dstmac"           # 宛先MAC
 ]
@@ -150,7 +153,7 @@ if USE_IP_FILTER:
         )
 
 # ディレクトリ作成
-os.makedirs(save_dir, exist_ok=True)
+os.makedirs(SAVE_DIR, exist_ok=True)
 
 # ポリシーID取得
 if GET_SINGLE_POLICY and not GET_POLICY_RANGE:
@@ -256,14 +259,14 @@ for policy_id in policy_ids:
             continue
 
         if logs:
-            filename = os.path.join(save_dir, f"policy_logs_{policy_id}_{timestamp_str}.csv")
+            filename = os.path.join(SAVE_DIR, f"policy_logs_{policy_id}_{timestamp_str}.csv")
 
             with open(filename, "w", newline="", encoding="utf-8") as csvfile:
-                writer = csv.DictWriter(csvfile, fieldnames=required_fields)
+                writer = csv.DictWriter(csvfile, fieldnames=REQUIRED_FIELDS)
                 writer.writeheader()
 
                 for entry in logs:
-                    filtered_entry = {key: entry.get(key, "") for key in required_fields}
+                    filtered_entry = {key: entry.get(key, "") for key in REQUIRED_FIELDS}
                     writer.writerow(filtered_entry)
 
             print(
