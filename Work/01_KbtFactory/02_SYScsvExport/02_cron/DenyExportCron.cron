@@ -1,1 +1,0 @@
-0 6 * * * /usr/bin/nice -n 15 /usr/bin/ionice -c 3 /usr/bin/python3 /data/archive/00_script/02_cron/DenyExportCron.py >> /data/archive/01_csv/01_DenyExport/DenyExport.log 2>&1
