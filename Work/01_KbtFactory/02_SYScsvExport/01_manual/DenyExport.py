@@ -21,10 +21,10 @@ TARGET_DATE = input(
 FGT_IP = "x.x.x.x"
 
 # Syslog保存先ディレクトリ指定
-ARCHIVE_DIR = "/data/archive"
+ARCHIVE_DIR = "none"
 
 # 出力先
-SAVE_DIR = "/data/archive/01_csv/01_DenyExport"
+SAVE_DIR = "none"
 
 # 除外ポリシー番号
 EXCLUDE_POLICY_IDS = {"0", "8", "201"}
