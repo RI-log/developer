@@ -1,0 +1,4 @@
+0 6 * * * /usr/bin/nice -n 15 /usr/bin/ionice -c 3 /usr/bin/python3 /data/archive/00_script/01_DenyExport/02_cron/DenyExportCron.py >> /data/archive/01_csv/01_DenyExport/DenyExport.log 2>&1
+
+0 7 * * * /usr/bin/find /data/archive/01_csv/01_DenyExport -maxdepth 1 -type f -name 'deny_logs_*.csv' -mtime +364 -print -delete >> /data/archive/01_csv/01_DenyExport/DenyExportDelFiles.log 2>&1
+ 
