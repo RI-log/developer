@@ -21,10 +21,10 @@ TARGET_DATE = input(
 FGT_IP = "x.x.x.x"
 
 # Syslog保存先ディレクトリ指定
-ARCHIVE_DIR = "none"
+ARCHIVE_DIR = ""
 
 # 出力先
-SAVE_DIR = "none"
+SAVE_DIR = ""
 
 # 除外ポリシー番号
 EXCLUDE_POLICY_IDS = {"0", "8", "201"}
