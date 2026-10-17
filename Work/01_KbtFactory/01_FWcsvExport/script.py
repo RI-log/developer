@@ -12,15 +12,15 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # ==============================
 # FortiGate情報
 FGT_IP = "x.x.x.x"
-API_TOKEN = "none"
+API_TOKEN = ""
 
 # FortiGateログ保存先
 # 検証機: memory
 # 本番機: disk
-LOG_DEVICE = "none"
+LOG_DEVICE = ""
 
 # 保存先ディレクトリ指定
-SAVE_DIR = r"none"
+SAVE_DIR = r""
 
 # 取得するログ件数 (MAX:5000)
 LOG_ROWS = 5000
