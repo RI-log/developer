@@ -20,14 +20,14 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # FortiGate情報
 FGT_IP = "x.x.x.x"
-API_TOKEN = "none"
+API_TOKEN = ""
 VDOM = "root"
 
 # Syslog保存先ディレクトリ指定
-ARCHIVE_DIR = "none"
+ARCHIVE_DIR = ""
 
 # 出力先
-SAVE_DIR = "none"
+SAVE_DIR = ""
 
 # 解析対象日付 "yyyymmdd"
 START_DATE = input(
